@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     public class TileCoordinate
     {

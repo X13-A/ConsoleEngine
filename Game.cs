@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Console3DRenderer.EventSystem;
-using Console3DRenderer.Menus;
+using ConsoleEngine.EventSystem;
+using ConsoleEngine.Menus;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     internal class Game : Singleton<Game>
     {

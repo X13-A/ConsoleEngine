@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     public class ConsoleDisplay : Singleton<ConsoleDisplay>
     {

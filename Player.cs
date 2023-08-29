@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Console3DRenderer.EventSystem;
+using ConsoleEngine.EventSystem;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     internal class Player
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Console3DRenderer.EventSystem;
+using ConsoleEngine.EventSystem;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     public class InputManager : Singleton<InputManager>
     {

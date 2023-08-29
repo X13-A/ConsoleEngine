@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Diagnostics;
-using Console3DRenderer.EventSystem;
-using Console3DRenderer.Menus;
-using Console3DRenderer.Render;
+using ConsoleEngine.EventSystem;
+using ConsoleEngine.Menus;
+using ConsoleEngine.Render;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     public class App : Singleton<App>
     {

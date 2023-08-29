@@ -1,38 +1,69 @@
-﻿using Console3DRenderer.EventSystem;
-using Console3DRenderer.Menus;
-using Console3DRenderer.Render;
+﻿using ConsoleEngine.EventSystem;
+using ConsoleEngine.Menus;
+using ConsoleEngine.Render;
 
-namespace Console3DRenderer
+namespace ConsoleEngine
 {
     public class Scene3D : Singleton<Scene3D>
     {
         private Camera camera;
-        private Point3D[] shape;
+        private List<Shape> shapes = new List<Shape>();
         private float rotateSpeed = 0.005f;
         private float moveSpeed = 0.1f;
+
         public void Init()
         {
             SubscribeEvents();
-            shape = new Point3D[]
-            {
-                new Point3D(-1, -1, 5),
-                new Point3D(1, -1, 5),
 
-                new Point3D(1, 1, 5),
-                new Point3D(-1, 1, 5),
+            // Create first shape (cube)
+            Shape cube = new Shape();
 
-                new Point3D(-1, -1, 10),
-                new Point3D(1, -1, 10),
+            cube.vertices = new Point3D[] {
+                new Point3D(-1, -1, -1), // 0
+                new Point3D(-1, -1, 1),  // 1
+                new Point3D(1, -1, 1),   // 2
+                new Point3D(1, -1, -1),  // 3
 
-                new Point3D(1, 1, 10),
-                new Point3D(-1, 1, 10)
+                new Point3D(-1, 1, -1),  // 4
+                new Point3D(-1, 1, 1),   // 5
+                new Point3D(1, 1, 1),    // 6
+                new Point3D(1, 1, -1),   // 7
             };
 
-            foreach (Point3D point in shape)
+            cube.indices = new int[] {
+                // Front
+                0, 4, 7,
+                7, 3, 0,
+
+                // Bottom
+                0, 1, 2,
+                3, 0, 1,
+
+                // Right
+                3, 7, 6,
+                6, 2, 3,
+
+                // Left
+                0, 1, 5,
+                5, 4, 0,
+
+                // Top
+                4, 5, 6,
+                7, 4, 6,
+
+                // Back
+                1, 2, 5,
+                5, 6, 2
+            };
+
+            foreach (Point3D point in cube.vertices)
             {
                 point.X += 5f;
                 point.Y += 5f;
+                point.Z += 5f;
             }
+
+            shapes.Add(cube);
             camera = new Camera();
         }
 
@@ -57,7 +88,11 @@ namespace Console3DRenderer
         {
             if (camera == null) return;
             ConsoleDisplay.Instance.WriteLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
-            Renderer.Instance.Render(shape, camera);
+
+            foreach (Shape shape in shapes)
+            {
+                Renderer.Instance.Render(shape, camera);
+            }
         }
 
         public void Update()

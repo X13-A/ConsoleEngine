@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.Render
+namespace ConsoleEngine.Render
 {
     public class Point3D
     {

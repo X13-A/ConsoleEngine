@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.Menus
+namespace ConsoleEngine.Menus
 {
     public class ConsoleMenu : Menu
     {

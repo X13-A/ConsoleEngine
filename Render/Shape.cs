@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.Render
+namespace ConsoleEngine.Render
 {
-    internal class Shape
+    public class Shape
     {
+        public Point3D[] vertices = {};
+        public int[] indices = {};
     }
 }

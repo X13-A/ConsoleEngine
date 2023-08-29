@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.EventSystem
+namespace ConsoleEngine.EventSystem
 {
     public class EventManager : Singleton<EventManager>
     {

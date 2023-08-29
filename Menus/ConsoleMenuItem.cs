@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.Menus
+namespace ConsoleEngine.Menus
 {
     public class ConsoleMenuItem : MenuItem
     {

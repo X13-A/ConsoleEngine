@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3DRenderer.Render
+namespace ConsoleEngine.Render
 {
     public class Renderer : Singleton<Renderer>
     {
@@ -27,7 +27,7 @@ namespace Console3DRenderer.Render
             return inWidth && inHeight;
         }
 
-        public void Render(Point3D[] shape, Camera camera)
+        public void Render(Shape shape, Camera camera)
         {
             // HACK
             // TODO: Make proper window system
@@ -35,7 +35,7 @@ namespace Console3DRenderer.Render
             frame.Height = Console.WindowHeight;
 
             List<Point2D> screenPoints = new List<Point2D>();
-            foreach (Point3D point in shape)
+            foreach (Point3D point in shape.vertices)
             {
                 // Calc coordinates
                 float yP = (camera.Position.Y + point.Y) / ((-camera.Position.Z + point.Z) * MathF.Tan(fov / 2f));

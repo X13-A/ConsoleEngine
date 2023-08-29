@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Console3DRenderer.Menus;
+using ConsoleEngine.Menus;
 #pragma warning disable CS8618
 
-namespace Console3DRenderer.EventSystem
+namespace ConsoleEngine.EventSystem
 {
     public class KeyPressedEvent : Event
     {
