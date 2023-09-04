@@ -1,6 +1,7 @@
 ﻿using ConsoleEngine.EventSystem;
 using ConsoleEngine.Menus;
 using ConsoleEngine.Render;
+using ConsoleEngine.Render.Structs;
 using System.Numerics;
 
 namespace ConsoleEngine
@@ -38,7 +39,7 @@ namespace ConsoleEngine
 
                 // Bottom
                 0, 1, 2,
-                3, 0, 1,
+                2, 3, 0,
 
                 // Right
                 3, 7, 6,

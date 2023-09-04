@@ -1,4 +1,5 @@
 ﻿using ConsoleEngine.EventSystem;
+using ConsoleEngine.Render.Structs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,80 +10,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleEngine.Render
 {
-    public class Triangle2D
-    {
-        public Vector2 a;
-        public Vector2 b;
-        public Vector2 c;
-
-        public List<Vector2> points => new List<Vector2> { a, b, c };
-
-        public Triangle2D(Vector2 a, Vector2 b, Vector2 c)
-        {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-
-        public bool ContainsPoint(Vector2 p)
-        {
-            // Calculate barycentric coordinates
-            float denom = (b.Y - c.Y) * (a.X - c.X) + (c.X - b.X) * (a.Y - c.Y);
-            float wA = ((b.Y - c.Y) * (p.X - c.X) + (c.X - b.X) * (p.Y - c.Y)) / denom;
-            float wB = ((c.Y - a.Y) * (p.X - c.X) + (a.X - c.X) * (p.Y - c.Y)) / denom;
-            float wC = 1 - wA - wB;
-
-            // If they are between 0 and 1 then we good
-            return wA >= 0 && wA <= 1 && wB >= 0 && wB <= 1 && wC >= 0 && wC <= 1;
-        }
-    }
-
-    public class Triangle2DInt
-    {
-        public Vector2Int a;
-        public Vector2Int b;
-        public Vector2Int c;
-
-        public List<Vector2Int> points => new List<Vector2Int> { a, b, c };
-    }
-
-    public class BoundingBox2D
-    {
-        public int minX;
-        public int minY;
-        public int maxX;
-        public int maxY;
-
-        public static BoundingBox2D FromTriangle2D(Triangle2D triangle)
-        {
-            BoundingBox2D box = new BoundingBox2D();
-            List<float> xCoords = new List<float> { triangle.a.X, triangle.b.X, triangle.c.X };
-            box.minX = (int) MathF.Round(xCoords.Min<float>());
-            box.maxX = (int)MathF.Round(xCoords.Max<float>());
-
-            List<float> yCoords = new List<float> { triangle.a.Y, triangle.b.Y, triangle.c.Y };
-            box.minY = (int)MathF.Round(yCoords.Min<float>());
-            box.maxY = (int)MathF.Round(yCoords.Max<float>());
-            return box;
-        }
-
-        public static BoundingBox2D FromTriangle2D(Triangle2DInt triangle)
-        {
-            BoundingBox2D box = new BoundingBox2D();
-            List<float> xCoords = new List<float> { triangle.a.X, triangle.b.X, triangle.c.X };
-            box.minX = (int)MathF.Round(xCoords.Min<float>());
-            box.maxX = (int)MathF.Round(xCoords.Max<float>());
-
-            List<float> yCoords = new List<float> { triangle.a.Y, triangle.b.Y, triangle.c.Y };
-            box.minY = (int)MathF.Round(yCoords.Min<float>());
-            box.maxY = (int)MathF.Round(yCoords.Max<float>());
-            return box;
-        }
-    }
-
     public class Renderer : Singleton<Renderer>
     {
         private RenderFrame frame;
+        private string symbols = " .:-=+*%@#";
 
         public Renderer(int frameWidth, int frameHeight)
         {
@@ -92,7 +23,17 @@ namespace ConsoleEngine.Render
         }
 
         public Renderer() : this(Console.WindowWidth, Console.WindowHeight)
-        {}
+        { }
+
+        /// <param name="intensity">Must range from 0 to 1</param>
+        /// <returns></returns>
+        public char SymbolFromIntensity(float intensity)
+        {
+            int index = (int) (symbols.Length * intensity);
+            if (index < 0) return 'x';
+            if (index > symbols.Length) return 'x';
+            return symbols[index];
+        }
 
         public bool IsPointInFrame(int x, int y)
         {
@@ -102,18 +43,19 @@ namespace ConsoleEngine.Render
             return inWidth && inHeight;
         }
 
-        public List<Vector2Int> GetPixelsInsideTriangle(Triangle2D triangle, Camera camera)
+        public List<TrianglePixelData> GetPixelsInsideTriangle(Triangle2D triangle)
         {
-            List<Vector2Int> pixels = new List<Vector2Int>();
+            List<TrianglePixelData> pixels = new List<TrianglePixelData>();
 
             BoundingBox2D bb = BoundingBox2D.FromTriangle2D(triangle);
             for (int x = bb.minX; x < bb.maxX; x++)
             {
                 for (int y = bb.minY; y < bb.maxY; y++)
                 {
-                    if (triangle.ContainsPoint(new Vector2(x, y)))
+                    Vector3 barycentricWeights;
+                    if (triangle.ContainsPoint(new Vector2(x, y), out barycentricWeights))
                     {
-                        pixels.Add(new Vector2Int(x, y));
+                        pixels.Add(new TrianglePixelData(new Vector2Int(x, y), barycentricWeights));
                     }
                 }
             }
@@ -154,18 +96,22 @@ namespace ConsoleEngine.Render
 
             for (int i = 0; i < shape.indices.Length / 3; i++)
             {
-                Vector3 a = shape.vertices[shape.indices[i*3]];
-                Vector3 b = shape.vertices[shape.indices[i*3+1]];
-                Vector3 c = shape.vertices[shape.indices[i*3+2]];
+                Vector3 a = shape.vertices[shape.indices[i * 3]];
+                Vector3 b = shape.vertices[shape.indices[i * 3 + 1]];
+                Vector3 c = shape.vertices[shape.indices[i * 3 + 2]];
 
                 Triangle2D projectedTriangle = ProjectTriangle(a, b, c, camera);
-                List<Vector2Int> pixels = GetPixelsInsideTriangle(projectedTriangle, camera);
+                List<TrianglePixelData> pixels = GetPixelsInsideTriangle(projectedTriangle);
 
                 for (int j = 0; j < pixels.Count; j++)
                 {
-                    if (!IsPointInFrame(pixels[j].X, pixels[j].Y)) continue;
-                    //float depth = Vector3.Distance(camera.Position.
-                    frame.SetPixel(pixels[j].X, pixels[j].Y, new ConsolePixel(shape.colors[i], shape.colors[i], ' ', 0));
+                    if (!IsPointInFrame(pixels[j].coordinates.X, pixels[j].coordinates.Y)) continue;
+
+                    float depth = pixels[j].barycentricWeight.X * a.Z + pixels[j].barycentricWeight.Y * b.Z + pixels[j].barycentricWeight.Z * c.Z;
+                    if (depth < frame.GetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y).depth)
+                    {
+                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(ConsoleColor.Black, shape.colors[i], ' ', depth));
+                    }
                 }
             }
         }

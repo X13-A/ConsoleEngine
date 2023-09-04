@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using ConsoleEngine.Render.Structs;
 
 namespace ConsoleEngine.Render
 {
@@ -79,7 +80,7 @@ namespace ConsoleEngine.Render
                     ConsolePixel newPixel = frame.GetPixel(x, y);
                     ConsolePixel oldPixel = oldFrame.GetPixel(x, y);
 
-                    if (!newPixel.Equals(oldPixel))
+                    if (!newPixel.HasSameDisplay(oldPixel))
                     {
                         Console.SetCursorPosition(x, y);
                         Console.ForegroundColor = newPixel.color;

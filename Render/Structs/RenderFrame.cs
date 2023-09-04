@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleEngine.Render
 {
-    public class RenderFrame
+    public struct RenderFrame
     {
         public int Width;
         public int Height;

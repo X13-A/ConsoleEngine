@@ -68,6 +68,7 @@ namespace ConsoleEngine
             new MenuManager();
             new ConsoleDisplay2();
             new Renderer();
+            new Utils();
             MenuManager.Instance.Init();
             ConsoleDisplay2.Instance.Init();
         }

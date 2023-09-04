@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleEngine.Render
 {
-    public class Shape
+    public struct Shape
     {
         public Vector3[] vertices = { };
         public int[] indices = { };
