@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleEngine.Render;
 
 namespace ConsoleEngine.Menus
 {
@@ -48,7 +49,7 @@ namespace ConsoleEngine.Menus
 
         public override void Draw()
         {
-            ConsoleDisplay.Instance.WriteLine(name, color, backgroundColor);
+            ConsoleDisplay2.Instance.DrawLine(name, color, backgroundColor);
 
             int i = 0;
             foreach (MenuItem item in Items)

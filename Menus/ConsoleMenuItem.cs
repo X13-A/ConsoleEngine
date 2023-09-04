@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleEngine.Render;
 
 namespace ConsoleEngine.Menus
 {
@@ -48,11 +49,11 @@ namespace ConsoleEngine.Menus
         {
             if (highlighted)
             {
-                ConsoleDisplay.Instance.WriteLine($"-> {name}", highlightColor, highlightBackgroundColor);
+                ConsoleDisplay2.Instance.DrawLine($"-> {name}", highlightColor, highlightBackgroundColor);
             }
             else
             {
-                ConsoleDisplay.Instance.WriteLine($"   {name}", color, backgroundColor);
+                ConsoleDisplay2.Instance.DrawLine($"   {name}", color, backgroundColor);
             }
         }
     }

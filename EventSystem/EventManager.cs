@@ -37,8 +37,9 @@ namespace ConsoleEngine.EventSystem
             if (!eventListeners.ContainsKey(eventType)) return;
 
             List<Delegate> delegates = eventListeners[eventType];
-            foreach (Delegate callback in delegates)
+            for (int i = 0; i < delegates.Count; i++)
             {
+                Delegate callback = delegates[i];
                 if (callback.Method.GetParameters().Length == 1 && callback.Method.GetParameters()[0].ParameterType == eventType)
                 {
                     callback.DynamicInvoke(e);

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Render
 {
-    public class ConsoleDisplay : Singleton<ConsoleDisplay>
+    public class ConsoleDisplayOLD : Singleton<ConsoleDisplayOLD>
     {
         private List<string> lines = new List<string>();
         private List<string> newLines = new List<string>();
@@ -44,12 +44,21 @@ namespace ConsoleEngine
             WriteLine($"{App.Instance.FrameTime} ms", ConsoleColor.DarkCyan, ConsoleColor.Black);
         }
 
+        public void WriteLine(ConsolePixel[] pixels)
+        {
+        }
+
+        public void Write(ConsolePixel pixel)
+        {
+
+        }
+
         public void WriteLine(string line) => WriteLine(line, ConsoleColor.White, ConsoleColor.Black);
 
         public void WriteLine(string line, ConsoleColor color, ConsoleColor backgroundColor)
         {
             int i = newLines.Count;
-            if (i >= Console.WindowHeight -1)
+            if (i >= Console.WindowHeight - 1)
             {
                 return;
             }

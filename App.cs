@@ -66,10 +66,10 @@ namespace ConsoleEngine
             new EventManager();
             new InputManager();
             new MenuManager();
-            new ConsoleDisplay();
+            new ConsoleDisplay2();
             new Renderer();
             MenuManager.Instance.Init();
-            ConsoleDisplay.Instance.Init();
+            ConsoleDisplay2.Instance.Init();
         }
 
         private void SetFPS()
@@ -82,7 +82,7 @@ namespace ConsoleEngine
         {
             InputManager.Instance.UpdateKeyStates();
             Scene3D.Instance?.Update();
-            App.Instance.SetFPS();
+            SetFPS();
         }
 
         private void Draw()
@@ -95,7 +95,9 @@ namespace ConsoleEngine
             {
                 Scene3D.Instance?.Draw();
             }
-            ConsoleDisplay.Instance.Refresh();
+            Console.Title = $"{(int) FPS} FPS";
+
+            ConsoleDisplay2.Instance.Refresh();
         }
     }
 }

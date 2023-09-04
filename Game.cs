@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ConsoleEngine.EventSystem;
 using ConsoleEngine.Menus;
+using ConsoleEngine.Render;
 
 namespace ConsoleEngine
 {
@@ -61,7 +62,7 @@ namespace ConsoleEngine
                 // Draw map
                 foreach (string line in mapLines)
                 {
-                    ConsoleDisplay.Instance.WriteLine(line);
+                    ConsoleDisplay2.Instance.DrawLine(line);
                 }
             }
         }

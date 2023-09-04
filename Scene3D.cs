@@ -1,6 +1,7 @@
 ﻿using ConsoleEngine.EventSystem;
 using ConsoleEngine.Menus;
 using ConsoleEngine.Render;
+using System.Numerics;
 
 namespace ConsoleEngine
 {
@@ -8,29 +9,29 @@ namespace ConsoleEngine
     {
         private Camera camera;
         private List<Shape> shapes = new List<Shape>();
-        private float rotateSpeed = 0.005f;
-        private float moveSpeed = 0.1f;
+        private float rotateSpeed = 0.01f;
+        private float moveSpeed = 0.2f;
 
         public void Init()
         {
             SubscribeEvents();
 
             // Create first shape (cube)
-            Shape cube = new Shape();
+            Shape cube1 = new Shape();
 
-            cube.vertices = new Point3D[] {
-                new Point3D(-1, -1, -1), // 0
-                new Point3D(-1, -1, 1),  // 1
-                new Point3D(1, -1, 1),   // 2
-                new Point3D(1, -1, -1),  // 3
+            cube1.vertices = new Vector3[] {
+                new Vector3(-1, -1, -1), // 0
+                new Vector3(-1, -1, 1),  // 1
+                new Vector3(1, -1, 1),   // 2
+                new Vector3(1, -1, -1),  // 3
 
-                new Point3D(-1, 1, -1),  // 4
-                new Point3D(-1, 1, 1),   // 5
-                new Point3D(1, 1, 1),    // 6
-                new Point3D(1, 1, -1),   // 7
+                new Vector3(-1, 1, -1),  // 4
+                new Vector3(-1, 1, 1),   // 5
+                new Vector3(1, 1, 1),    // 6
+                new Vector3(1, 1, -1),   // 7
             };
 
-            cube.indices = new int[] {
+            cube1.indices = new int[] {
                 // Front
                 0, 4, 7,
                 7, 3, 0,
@@ -56,14 +57,44 @@ namespace ConsoleEngine
                 5, 6, 2
             };
 
-            foreach (Point3D point in cube.vertices)
+            cube1.colors = new ConsoleColor[]
             {
-                point.X += 5f;
-                point.Y += 5f;
-                point.Z += 5f;
-            }
+                // Front
+                ConsoleColor.Cyan,
+                ConsoleColor.Cyan,
 
-            shapes.Add(cube);
+                // Bottom
+                ConsoleColor.DarkRed,
+                ConsoleColor.DarkRed,
+
+                // Right
+                ConsoleColor.Yellow,
+                ConsoleColor.Yellow,
+
+                // Left
+                ConsoleColor.Blue,
+                ConsoleColor.Blue,
+
+                // Top
+                ConsoleColor.DarkCyan,
+                ConsoleColor.DarkCyan,
+
+                // Back
+                ConsoleColor.Green,
+                ConsoleColor.Green
+            };
+
+            cube1.Translate(new Vector3(0, 0, 5));
+            shapes.Add(cube1);
+
+            //Shape cube2 = new Shape(cube1);
+            //cube2.Translate(new Vector3(5, 0, 5));
+            //shapes.Add(cube2);
+
+            //Shape cube3 = new Shape(cube1);
+            //cube3.Translate(new Vector3(-5, 0, 5));
+            //shapes.Add(cube3);
+
             camera = new Camera();
         }
 
@@ -87,16 +118,22 @@ namespace ConsoleEngine
         public void Draw()
         {
             if (camera == null) return;
-            ConsoleDisplay.Instance.WriteLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
+            ConsoleDisplay2.Instance.DrawLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
 
             foreach (Shape shape in shapes)
             {
                 Renderer.Instance.Render(shape, camera);
             }
+            Renderer.Instance.Draw();
         }
 
         public void Update()
         {
+            float rotateSpeed = 1f * (float) (App.Instance.FrameTime / 1000);
+            foreach (Shape shape in shapes)
+            {
+                shape.Rotate(new Vector3(0, 0, 5), 0, rotateSpeed, 0);
+            }
         }
 
         public void Rotate(float x, float y, float z)

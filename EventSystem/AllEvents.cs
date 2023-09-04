@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleEngine.Menus;
@@ -36,5 +37,14 @@ namespace ConsoleEngine.EventSystem
 
     public class ResumeGameEvent : Event
     {
+    }
+
+    public class ErrorEvent : Event
+    {
+    }
+
+    public class RenderErrorEvent : ErrorEvent
+    {
+        public string message;
     }
 }
