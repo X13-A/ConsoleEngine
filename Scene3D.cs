@@ -86,8 +86,8 @@ namespace ConsoleEngine
                 ConsoleColor.Blue
             };
 
-            //cube1.Translate(new Vector3(0, 0, 5));
-            //shapes.Add(cube1);
+            cube1.Translate(new Vector3(5, 0, 5));
+            shapes.Add(cube1);
 
             Shape? shape = ObjImporter.Import("C:\\Users\\Actility\\Downloads\\cat.obj");
             if (shape != null)
@@ -141,10 +141,12 @@ namespace ConsoleEngine
         public void Update()
         {
             float rotateSpeed = 1f * ((float) PerformanceInfo.Instance.DeltaTime);
-            foreach (Shape shape in shapes)
-            {
-                shape.Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
-            }
+            shapes[0].Rotate(0, rotateSpeed, 0, new Vector3(5, 0, 5));
+            shapes[1].Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
+            //foreach (Shape shape in shapes)
+            //{
+            //    shape.Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
+            //}
         }
 
         public void Rotate(float x, float y, float z)
