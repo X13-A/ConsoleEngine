@@ -29,14 +29,16 @@ namespace ConsoleEngine.Render
             this.depth = depth;
         }
 
-        public bool HasSameDisplay(ConsolePixel other)
+        public bool HasSameColor(ConsolePixel other)
         {
             if (other.color != color) return false;
             if (other.backgroundColor != backgroundColor) return false;
-            if (other.symbol != symbol) return false;
-            // No need to compare depth in that context
             return true;
         }
-    }
 
+        public bool HasSameDisplay(ConsolePixel other)
+        {
+            return HasSameColor(other) && other.symbol == symbol;
+        }
+    }
 }

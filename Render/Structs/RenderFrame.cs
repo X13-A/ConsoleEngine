@@ -55,6 +55,11 @@ namespace ConsoleEngine.Render
             return Display[x, y];
         }
 
+        public ConsolePixel GetPixel(Vector2Int pos)
+        {
+            return Display[pos.X, pos.Y];
+        }
+
         /// <summary>
         /// <para>Resizes the frame.</para>
         /// <para>RenderFrame.Clear() needs to be called afterwards</para>

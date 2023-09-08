@@ -68,19 +68,96 @@ namespace ConsoleEngine.Render
             }
         }
 
+        public Vector2Int GetNextDifferencePosition(Vector2Int cursor)
+        {
+
+            ConsolePixel startPixel = frame.GetPixel(cursor.X, cursor.Y);
+            IncrementCursor(ref cursor);
+
+            while (IsCursorInBounds(cursor) && startPixel.HasSameDisplay(frame.GetPixel(cursor)))
+            {
+                IncrementCursor(ref cursor);
+            }
+
+            return cursor;
+        }
+
+        public void IncrementCursor(ref Vector2Int cursor)
+        {
+            cursor.X++;
+            if (cursor.X == frame.Width)
+            {
+                cursor.X = 0;
+                cursor.Y++;
+            }
+        }
+
+        public bool IsCursorInBounds(Vector2Int cursor)
+        {
+            return cursor.Y < frame.Height;
+        }
+
+        public void Refresh_new()
+        {
+            cursor.X = 0; cursor.Y = 0;
+            Vector2Int drawCursor = new Vector2Int(0, 0);
+            do
+            {
+                Vector2Int startPos = new Vector2Int(drawCursor);
+
+                ConsolePixel newPixel = frame.GetPixel(drawCursor);
+                ConsolePixel oldPixel = oldFrame.GetPixel(drawCursor);
+                string block = "";
+
+                if (newPixel.HasSameDisplay(oldPixel))
+                {
+                    IncrementCursor(ref drawCursor);
+                    continue;
+                }
+                else
+                {
+                    // Get difference
+                    Vector2Int nextDiffPos = GetNextDifferencePosition(drawCursor);
+                    if (IsCursorInBounds(drawCursor))
+                    {
+                        do
+                        {
+                            block += frame.GetPixel(drawCursor).symbol;
+                            IncrementCursor(ref drawCursor);
+                        }
+                        while (!drawCursor.Equals(nextDiffPos) && IsCursorInBounds(drawCursor));
+                    }
+                }
+
+                Console.SetCursorPosition(startPos.X, startPos.Y);
+                Console.ForegroundColor = newPixel.color;
+                Console.BackgroundColor = newPixel.backgroundColor;
+                Console.Write(block);
+            }
+            // NEEDS CHECKING
+            while (IsCursorInBounds(drawCursor));
+
+            oldFrame = new RenderFrame(frame);
+
+            // TODO: Trigger resize only when Console size changes
+            frame.Resize(Console.WindowWidth, Console.WindowHeight);
+            frame.Clear();
+        }
+
         public void Refresh()
         {
             cursor.X = 0; cursor.Y = 0;
             Console.SetCursorPosition(0, 0);
 
+
             for (int y = 0; y < frame.Height; y++)
             {
                 for (int x = 0; x < frame.Width; x++)
                 {
+
                     ConsolePixel newPixel = frame.GetPixel(x, y);
                     ConsolePixel oldPixel = oldFrame.GetPixel(x, y);
-
-                    if (!newPixel.HasSameDisplay(oldPixel))
+                    if (!newPixel.HasSameColor(oldPixel))
                     {
                         Console.SetCursorPosition(x, y);
                         Console.ForegroundColor = newPixel.color;

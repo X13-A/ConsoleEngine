@@ -63,21 +63,21 @@ namespace ConsoleEngine.Render
             return pixels;
         }
 
-        public Triangle2D ProjectTriangle(Vector3 a, Vector3 b, Vector3 c, Camera camera)
+        public Triangle2D ProjectTriangle(Triangle3D triangle, Camera camera)
         {
-            Vector3 aTransformed = camera.TransformToCameraSpace(a);
+            Vector3 aTransformed = camera.TransformToCameraSpace(triangle.a);
             Vector2 aProjected = camera.ProjectPerspective(aTransformed);
             aProjected *= new Vector2(frame.Width, frame.Height);
             aProjected.X = (int)MathF.Round(aProjected.X);
             aProjected.Y = (int)MathF.Round(aProjected.Y);
 
-            Vector3 bTransformed = camera.TransformToCameraSpace(b);
+            Vector3 bTransformed = camera.TransformToCameraSpace(triangle.b);
             Vector2 bProjected = camera.ProjectPerspective(bTransformed);
             bProjected *= new Vector2(frame.Width, frame.Height);
             bProjected.X = (int)MathF.Round(bProjected.X);
             bProjected.Y = (int)MathF.Round(bProjected.Y);
 
-            Vector3 cTransformed = camera.TransformToCameraSpace(c);
+            Vector3 cTransformed = camera.TransformToCameraSpace(triangle.c);
             Vector2 cProjected = camera.ProjectPerspective(cTransformed);
             cProjected *= new Vector2(frame.Width, frame.Height);
             cProjected.X = (int)MathF.Round(cProjected.X);
@@ -96,18 +96,23 @@ namespace ConsoleEngine.Render
 
             for (int i = 0; i < shape.indices.Length / 3; i++)
             {
-                Vector3 a = shape.vertices[shape.indices[i * 3]];
-                Vector3 b = shape.vertices[shape.indices[i * 3 + 1]];
-                Vector3 c = shape.vertices[shape.indices[i * 3 + 2]];
+                Triangle3D triangle = new Triangle3D
+                (
+                    shape.vertices[shape.indices[i * 3]],
+                    shape.vertices[shape.indices[i * 3 + 1]],
+                    shape.vertices[shape.indices[i * 3 + 2]]
+                );
 
-                Triangle2D projectedTriangle = ProjectTriangle(a, b, c, camera);
+                if (!camera.IsVisible(triangle)) continue;
+
+                Triangle2D projectedTriangle = ProjectTriangle(triangle, camera);
                 List<TrianglePixelData> pixels = GetPixelsInsideTriangle(projectedTriangle);
 
                 for (int j = 0; j < pixels.Count; j++)
                 {
                     if (!IsPointInFrame(pixels[j].coordinates.X, pixels[j].coordinates.Y)) continue;
 
-                    float depth = pixels[j].barycentricWeight.X * a.Z + pixels[j].barycentricWeight.Y * b.Z + pixels[j].barycentricWeight.Z * c.Z;
+                    float depth = pixels[j].barycentricWeight.X * triangle.a.Z + pixels[j].barycentricWeight.Y * triangle.b.Z + pixels[j].barycentricWeight.Z * triangle.c.Z;
                     if (depth < frame.GetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y).depth)
                     {
                         ConsoleColor color = (shape.colors.Length > i ? shape.colors[i] : ConsoleColor.Gray);

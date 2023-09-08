@@ -16,5 +16,16 @@ namespace ConsoleEngine
             this.X = x;
             this.Y = y;
         }
+
+        public Vector2Int(Vector2Int other)
+        {
+            this.X = other.X;
+            this.Y = other.Y;
+        }
+
+        public bool Equals(Vector2Int other)
+        {
+            return X == other.X && Y == other.Y;
+        }
     }
 }

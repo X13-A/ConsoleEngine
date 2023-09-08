@@ -20,8 +20,6 @@ namespace ConsoleEngine.Render
 
         public void Refresh()
         {
-            if (Settings.displayPerformanceInfo) DisplayPerformanceInfo();
-
             // HACK: Use proper line count
 
             for (int i = newLines.Count; i < lines.Count; i++)
@@ -35,13 +33,6 @@ namespace ConsoleEngine.Render
             lines = Utils.CloneList(newLines);
             newLines.Clear();
             Console.SetCursorPosition(0, 0);
-        }
-
-        private void DisplayPerformanceInfo()
-        {
-            WriteLine("");
-            WriteLine($"{(int)App.Instance.FPS} FPS", ConsoleColor.DarkCyan, ConsoleColor.Black);
-            WriteLine($"{App.Instance.FrameTime} ms", ConsoleColor.DarkCyan, ConsoleColor.Black);
         }
 
         public void WriteLine(ConsolePixel[] pixels)
