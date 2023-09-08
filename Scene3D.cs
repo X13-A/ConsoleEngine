@@ -61,28 +61,28 @@ namespace ConsoleEngine
             cube1.colors = new ConsoleColor[]
             {
                 // Front
-                ConsoleColor.Cyan,
-                ConsoleColor.Cyan,
+                ConsoleColor.White,
+                ConsoleColor.Blue,
 
                 // Bottom
-                ConsoleColor.DarkRed,
-                ConsoleColor.DarkRed,
+                ConsoleColor.Yellow,
+                ConsoleColor.Yellow,
 
                 // Right
-                ConsoleColor.Yellow,
-                ConsoleColor.Yellow,
+                ConsoleColor.Red,
+                ConsoleColor.Red,
 
                 // Left
-                ConsoleColor.Blue,
-                ConsoleColor.Blue,
+                ConsoleColor.Green,
+                ConsoleColor.Green,
 
                 // Top
-                ConsoleColor.DarkCyan,
-                ConsoleColor.DarkCyan,
+                ConsoleColor.Yellow,
+                ConsoleColor.Yellow,
 
                 // Back
-                ConsoleColor.Green,
-                ConsoleColor.Green
+                ConsoleColor.Blue,
+                ConsoleColor.Blue
             };
 
             cube1.Translate(new Vector3(0, 0, 5));
@@ -130,7 +130,7 @@ namespace ConsoleEngine
 
         public void Update()
         {
-            float rotateSpeed = 1f * (float) (App.Instance.FrameTime / 1000);
+            float rotateSpeed = 1f * ((float) PerformanceInfo.Instance.DeltaTime);
             foreach (Shape shape in shapes)
             {
                 shape.Rotate(new Vector3(0, 0, 5), 0, rotateSpeed, 0);

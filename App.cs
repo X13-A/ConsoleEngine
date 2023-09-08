@@ -15,17 +15,11 @@ namespace ConsoleEngine
     public class App : Singleton<App>
     {
         private bool done;
-        private Stopwatch stopwatch = new Stopwatch();
-        private TimeSpan lastFrameTime;
-        private TimeSpan frameTime;
-        public double FrameTime => frameTime.TotalMilliseconds;
-        public double FPS => 1000f/frameTime.TotalMilliseconds;
 
         public void Start()
         {
             SetupSingletons();
             SubscribeEvents();
-            stopwatch.Start();
             StartLoop();
         }
 
@@ -58,6 +52,7 @@ namespace ConsoleEngine
             {
                 Update();
                 Draw();
+                PerformanceInfo.Instance.Update();
             }
         }
 
@@ -69,21 +64,16 @@ namespace ConsoleEngine
             new ConsoleDisplay2();
             new Renderer();
             new Utils();
+            new PerformanceInfo();
+            PerformanceInfo.Instance.Init();
             MenuManager.Instance.Init();
             ConsoleDisplay2.Instance.Init();
-        }
-
-        private void SetFPS()
-        {
-            frameTime = stopwatch.Elapsed - lastFrameTime;
-            lastFrameTime = stopwatch.Elapsed;
         }
 
         private void Update()
         {
             InputManager.Instance.UpdateKeyStates();
             Scene3D.Instance?.Update();
-            SetFPS();
         }
 
         private void Draw()
@@ -96,7 +86,7 @@ namespace ConsoleEngine
             {
                 Scene3D.Instance?.Draw();
             }
-            Console.Title = $"{(int) FPS} FPS";
+            Console.Title = $"{PerformanceInfo.Instance.averageFPS} FPS";
 
             ConsoleDisplay2.Instance.Refresh();
         }

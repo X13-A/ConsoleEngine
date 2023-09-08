@@ -39,6 +39,15 @@ namespace ConsoleEngine.Render
             return new Vector2(xP, yP);
         }
 
+        public bool IsVisible(Triangle3D triangle)
+        {
+            if (triangle.normal == null)
+            {
+                triangle.SetNormal();
+            }
+            Vector3 viewVector = Vector3.Normalize(Position - triangle.a);
+            return Vector3.Dot(triangle.normal.Value, viewVector) >= 0;
+        }
 
         public override string ToString()
         {
