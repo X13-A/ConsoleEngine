@@ -110,7 +110,8 @@ namespace ConsoleEngine.Render
                     float depth = pixels[j].barycentricWeight.X * a.Z + pixels[j].barycentricWeight.Y * b.Z + pixels[j].barycentricWeight.Z * c.Z;
                     if (depth < frame.GetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y).depth)
                     {
-                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(ConsoleColor.Black, shape.colors[i], ' ', depth));
+                        ConsoleColor color = (shape.colors.Length > i ? shape.colors[i] : ConsoleColor.Gray);
+                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(ConsoleColor.Black, color, ' ', depth));
                     }
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using ConsoleEngine.EventSystem;
+using ConsoleEngine.Importing;
 using ConsoleEngine.Menus;
 using ConsoleEngine.Render;
 using ConsoleEngine.Render.Structs;
@@ -85,8 +86,17 @@ namespace ConsoleEngine
                 ConsoleColor.Green
             };
 
-            cube1.Translate(new Vector3(0, 0, 5));
-            shapes.Add(cube1);
+            //cube1.Translate(new Vector3(0, 0, 5));
+            //shapes.Add(cube1);
+
+            Shape? shape = ObjImporter.Import("C:\\Users\\Actility\\Downloads\\cat.obj");
+            if (shape != null)
+            {
+                Shape actualShape = shape.Value;
+                actualShape.Translate(new Vector3(0, 0, 5));
+                actualShape.Scale(new Vector3(10, -10, 10), new Vector3(0,0,5));
+                shapes.Add(actualShape);
+            }
 
             //Shape cube2 = new Shape(cube1);
             //cube2.Translate(new Vector3(5, 0, 5));
@@ -133,7 +143,7 @@ namespace ConsoleEngine
             float rotateSpeed = 1f * (float) (App.Instance.FrameTime / 1000);
             foreach (Shape shape in shapes)
             {
-                shape.Rotate(new Vector3(0, 0, 5), 0, rotateSpeed, 0);
+                shape.Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
             }
         }
 

@@ -34,7 +34,7 @@ namespace ConsoleEngine.Render
             }
         }
 
-        public void Rotate(Vector3 point, float angleX, float angleY, float angleZ)
+        public void Rotate(float angleX, float angleY, float angleZ, Vector3 point)
         {
             Translate(-point);
 
@@ -57,5 +57,22 @@ namespace ConsoleEngine.Render
 
             Translate(point);
         }
+
+        public void Scale(Vector3 scaleFactors, Vector3? origin = null)
+        {
+            Vector3 scaleOrigin = origin ?? Vector3.Zero;
+
+            Translate(-scaleOrigin);
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = new Vector3(vertices[i].X * scaleFactors.X,
+                                          vertices[i].Y * scaleFactors.Y,
+                                          vertices[i].Z * scaleFactors.Z);
+            }
+
+            Translate(scaleOrigin);
+        }
+
     }
 }
