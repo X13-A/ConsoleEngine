@@ -2,4 +2,5 @@
 using ConsoleEngine.Render;
 
 new App().Start();
-return;
+Console.Clear();
+return 0;

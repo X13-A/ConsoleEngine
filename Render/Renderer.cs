@@ -13,7 +13,7 @@ namespace ConsoleEngine.Render
     public class Renderer : Singleton<Renderer>
     {
         private RenderFrame frame;
-        private string symbols = " .:-=+*%@#";
+        private string symbols = " .-~:;=+*%#@";
 
         public Renderer(int frameWidth, int frameHeight)
         {
@@ -29,9 +29,9 @@ namespace ConsoleEngine.Render
         /// <returns></returns>
         public char SymbolFromIntensity(float intensity)
         {
-            int index = (int) (symbols.Length * intensity);
-            if (index < 0) return 'x';
-            if (index > symbols.Length) return 'x';
+            int index = (int) Math.Round(intensity * symbols.Length);
+            if (index < 0) return symbols[0];
+            if (index >= symbols.Length) return symbols[symbols.Length-1];
             return symbols[index];
         }
 
@@ -48,9 +48,9 @@ namespace ConsoleEngine.Render
             List<TrianglePixelData> pixels = new List<TrianglePixelData>();
 
             BoundingBox2D bb = BoundingBox2D.FromTriangle2D(triangle);
-            for (int x = bb.minX; x < bb.maxX; x++)
+            for (int x = (int) MathF.Max(bb.minX, 0); x < (int) MathF.Min(bb.maxX, ConsoleDisplay2.Instance.consoleWidth); x++)
             {
-                for (int y = bb.minY; y < bb.maxY; y++)
+                for (int y = (int)MathF.Max(bb.minY, 0); y < (int)MathF.Min(bb.maxY, ConsoleDisplay2.Instance.consoleHeight); y++)
                 {
                     Vector3 barycentricWeights;
                     if (triangle.ContainsPoint(new Vector2(x, y), out barycentricWeights))
@@ -59,25 +59,28 @@ namespace ConsoleEngine.Render
                     }
                 }
             }
-
             return pixels;
         }
 
-        public Triangle2D ProjectTriangle(Triangle3D triangle, Camera camera)
+        public Triangle2D? ProjectTriangle(Triangle3D triangle, Camera camera)
         {
             Vector3 aTransformed = camera.TransformToCameraSpace(triangle.a);
+            Vector3 bTransformed = camera.TransformToCameraSpace(triangle.b);
+            Vector3 cTransformed = camera.TransformToCameraSpace(triangle.c);
+
+            // If any vertex of the triangle is behind the camera in camera space, return null
+            if (aTransformed.Z < 0 || bTransformed.Z < 0 || cTransformed.Z < 0) return null;
+
             Vector2 aProjected = camera.ProjectPerspective(aTransformed);
             aProjected *= new Vector2(frame.Width, frame.Height);
             aProjected.X = (int)MathF.Round(aProjected.X);
             aProjected.Y = (int)MathF.Round(aProjected.Y);
 
-            Vector3 bTransformed = camera.TransformToCameraSpace(triangle.b);
             Vector2 bProjected = camera.ProjectPerspective(bTransformed);
             bProjected *= new Vector2(frame.Width, frame.Height);
             bProjected.X = (int)MathF.Round(bProjected.X);
             bProjected.Y = (int)MathF.Round(bProjected.Y);
 
-            Vector3 cTransformed = camera.TransformToCameraSpace(triangle.c);
             Vector2 cProjected = camera.ProjectPerspective(cTransformed);
             cProjected *= new Vector2(frame.Width, frame.Height);
             cProjected.X = (int)MathF.Round(cProjected.X);
@@ -102,11 +105,13 @@ namespace ConsoleEngine.Render
                     shape.vertices[shape.indices[i * 3 + 1]],
                     shape.vertices[shape.indices[i * 3 + 2]]
                 );
+                triangle.SetNormal();
+                // TODO: Fix backface culling
+                //if (!camera.IsVisible(triangle)) continue;
 
-                if (!camera.IsVisible(triangle)) continue;
-
-                Triangle2D projectedTriangle = ProjectTriangle(triangle, camera);
-                List<TrianglePixelData> pixels = GetPixelsInsideTriangle(projectedTriangle);
+                Triangle2D? projectedTriangle = ProjectTriangle(triangle, camera);
+                if (projectedTriangle == null) continue;
+                List<TrianglePixelData> pixels = GetPixelsInsideTriangle(projectedTriangle.Value);
 
                 for (int j = 0; j < pixels.Count; j++)
                 {
@@ -116,7 +121,8 @@ namespace ConsoleEngine.Render
                     if (depth < frame.GetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y).depth)
                     {
                         ConsoleColor color = (shape.colors.Length > i ? shape.colors[i] : ConsoleColor.Gray);
-                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(ConsoleColor.Black, color, ' ', depth));
+                        float intensityX = (1 + MathF.Sin(triangle.normal.Value.X)) / 2;
+                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(color, ConsoleColor.Black, SymbolFromIntensity(intensityX), depth));
                     }
                 }
             }

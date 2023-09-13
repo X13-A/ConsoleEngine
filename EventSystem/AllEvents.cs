@@ -41,10 +41,28 @@ namespace ConsoleEngine.EventSystem
 
     public class ErrorEvent : Event
     {
+        public string message;
+    }
+
+    public class ImportErrorEvent : ErrorEvent
+    {
     }
 
     public class RenderErrorEvent : ErrorEvent
     {
-        public string message;
+    }
+
+    public class WaitForInputEvent : Event
+    {
+    }
+
+    public class InputFinishedEvent : Event
+    {
+    }
+
+    public class WindowResizeEvent : Event
+    {
+        public int width;
+        public int height;
     }
 }

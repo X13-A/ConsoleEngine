@@ -15,6 +15,7 @@ namespace ConsoleEngine.Render
 
         public ConsolePixel(ConsolePixel pixel)
         {
+            if (pixel == null) return;
             color = pixel.color;
             backgroundColor = pixel.backgroundColor;
             symbol = pixel.symbol;

@@ -13,12 +13,16 @@ using ConsoleEngine.Importing;
 
 namespace ConsoleEngine
 {
+    public enum AppState { WaitingInput, Running }
     public class App : Singleton<App>
     {
         private bool done;
+        private AppState appState;
+        public AppState AppState => appState;
 
         public void Start()
         {
+            appState = AppState.Running;
             SetupSingletons();
             SubscribeEvents();
             StartLoop();
@@ -28,6 +32,8 @@ namespace ConsoleEngine
         {
             EventManager.Instance.AddListener<ExitAppEvent>(Exit);
             EventManager.Instance.AddListener<StartGameEvent>(StartGame);
+            EventManager.Instance.AddListener<WaitForInputEvent>((WaitForInputEvent e) => { this.appState = AppState.WaitingInput; });
+            EventManager.Instance.AddListener<InputFinishedEvent>((InputFinishedEvent e) => { this.appState = AppState.Running; });
         }
 
         private void Exit(ExitAppEvent e)
@@ -73,12 +79,16 @@ namespace ConsoleEngine
 
         private void Update()
         {
+            if (appState == AppState.WaitingInput) return;
+
             InputManager.Instance.UpdateKeyStates();
             Scene3D.Instance?.Update();
         }
 
         private void Draw()
         {
+            if (appState == AppState.WaitingInput) return;
+
             if (MenuManager.Instance.ActiveMenu != null)
             {
                 MenuManager.Instance.ActiveMenu.Draw();
@@ -89,7 +99,7 @@ namespace ConsoleEngine
             }
             Console.Title = $"{PerformanceInfo.Instance.averageFPS} FPS";
 
-            ConsoleDisplay2.Instance.Refresh();
+            ConsoleDisplay2.Instance.Refresh_GreyScale();
         }
     }
 }

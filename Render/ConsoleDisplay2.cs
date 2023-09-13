@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using ConsoleEngine.EventSystem;
 using ConsoleEngine.Render.Structs;
 
 namespace ConsoleEngine.Render
@@ -15,6 +16,11 @@ namespace ConsoleEngine.Render
         private RenderFrame oldFrame;
         private RenderFrame frame;
         private Vector2Int cursor = new Vector2Int(0, 0);
+        public int consoleWidth = Console.WindowWidth;
+        public int consoleHeight = Console.WindowHeight;
+        private int consoleBufferWidth = Console.BufferWidth;
+        private int consoleBufferHeight = Console.BufferHeight;
+        private int lastResize = 0;
         private bool isCursorInFrame => cursor.X < frame.Width && cursor.Y < frame.Height;
 
         public void Init()
@@ -23,6 +29,12 @@ namespace ConsoleEngine.Render
             frame = new RenderFrame(Console.WindowWidth, Console.WindowHeight);
             frame.Clear();
             oldFrame = new RenderFrame(frame);
+            AddListeners();
+        }
+
+        public void AddListeners()
+        {
+            EventManager.Instance.AddListener<WindowResizeEvent>(Resize);
         }
 
         public void DrawPixel(ConsolePixel pixel)
@@ -144,34 +156,86 @@ namespace ConsoleEngine.Render
             frame.Clear();
         }
 
+        public void CheckResize()
+        {
+            consoleWidth = Console.WindowWidth;
+            consoleHeight = Console.WindowHeight;
+            consoleBufferWidth = Console.BufferWidth;
+            consoleBufferHeight = Console.BufferHeight;
+
+            if (consoleWidth != frame.Width && consoleHeight != frame.Height)
+            {
+                EventManager.Instance.Raise(new WindowResizeEvent { width = consoleWidth, height = consoleHeight });
+            }
+        }
+
+        public void Resize(WindowResizeEvent e)
+        {
+            frame.Resize(e.width, e.height);
+            lastResize = 0;
+            Console.Clear();
+            System.Diagnostics.Process.Start("cmd", "/c cls").WaitForExit();
+        }
+
         public void Refresh()
         {
+            CheckResize();
+
             cursor.X = 0; cursor.Y = 0;
             Console.SetCursorPosition(0, 0);
 
-
-            for (int y = 0; y < frame.Height; y++)
+            if (lastResize != 0)
             {
-                for (int x = 0; x < frame.Width; x++)
+                for (int y = 0; y < frame.Height; y++)
                 {
-
-                    ConsolePixel newPixel = frame.GetPixel(x, y);
-                    ConsolePixel oldPixel = oldFrame.GetPixel(x, y);
-                    if (!newPixel.HasSameColor(oldPixel))
+                    for (int x = 0; x < frame.Width; x++)
                     {
-                        Console.SetCursorPosition(x, y);
-                        Console.ForegroundColor = newPixel.color;
-                        Console.BackgroundColor = newPixel.backgroundColor;
-                        Console.Write(newPixel.symbol);
-                        Console.ResetColor();
+                        ConsolePixel newPixel = frame.GetPixel(x, y);
+                        ConsolePixel oldPixel = oldFrame.GetPixel(x, y);
+                        if (!newPixel.HasSameDisplay(oldPixel))
+                        {
+                            Console.SetCursorPosition(x, y);
+                            Console.ForegroundColor = newPixel.color;
+                            Console.BackgroundColor = newPixel.backgroundColor;
+                            Console.Write(newPixel.symbol);
+                            Console.ResetColor();
+                        }
                     }
                 }
             }
 
-            oldFrame = new RenderFrame(frame);
+            lastResize++;
 
-            // TODO: Trigger resize only when Console size changes
-            frame.Resize(Console.WindowWidth, Console.WindowHeight);
+            oldFrame = new RenderFrame(frame);
+            frame.Clear();
+        }
+
+        public void Refresh_GreyScale()
+        {
+            CheckResize();
+            cursor.X = 0; cursor.Y = 0;
+            Console.SetCursorPosition(0, 0);
+
+            for (int y = 0; y < frame.Height; y++)
+            {
+                string line = "";
+                for (int x = 0; x < frame.Width; x++)
+                {
+                    ConsolePixel pixel = frame.GetPixel(x, y);
+                    if (pixel == null) line += ' ';
+                    else line += pixel.symbol;
+                }
+                if (y == frame.Height - 1) Console.Write(line);
+                else Console.WriteLine(line);
+            }
+
+            lastResize++;
+            oldFrame = new RenderFrame(frame);
+            frame.Clear();
+        }
+
+        public void Clear()
+        {
             frame.Clear();
         }
     }

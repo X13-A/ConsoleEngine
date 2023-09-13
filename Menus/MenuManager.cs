@@ -19,6 +19,8 @@ namespace ConsoleEngine.Menus
 
         private Menu mainMenu;
         private Menu pauseMenu;
+        private MenuItem loadModel;
+
         public Menu MainMenu => mainMenu;
         public Menu PauseMenu => pauseMenu;
 
@@ -37,12 +39,13 @@ namespace ConsoleEngine.Menus
             exitButton.highlightColor = ConsoleColor.Red;
 
             mainMenu.AddItem(new ConsoleMenuItem("Start renderer", () => EventManager.Instance.Raise(new StartGameEvent())));
-            mainMenu.AddItem(new ConsoleMenuItem("Settings", () => { }));
+
+            loadModel = new ConsoleMenuItem($"Change model (current = {(Settings.objectPath == "" ? "null" : Settings.objectPath)})", () => { Utils.ImportObject(); });
+            mainMenu.AddItem(loadModel);
             mainMenu.AddItem(exitButton);
 
             pauseMenu = new ConsoleMenu("Paused");
             pauseMenu.AddItem(new ConsoleMenuItem("Resume", () => EventManager.Instance.Raise(new ResumeGameEvent())));
-            pauseMenu.AddItem(new ConsoleMenuItem("Settings", () => { }));
             pauseMenu.AddItem(ConsoleMenuItem.CreateBackButton((ConsoleMenu)mainMenu));
 
             EventManager.Instance.Raise(new OpenMenuEvent { menu = mainMenu });
@@ -120,6 +123,11 @@ namespace ConsoleEngine.Menus
                     activeMenu.Items[cursorIndex].action?.Invoke();
                 }
             }
+        }
+    
+        public void RefreshNames()
+        {
+            loadModel.name = $"Change model (current = {(Settings.objectPath == "" ? "null" : Settings.objectPath)})";
         }
     }
 }

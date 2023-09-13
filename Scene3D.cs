@@ -11,16 +11,16 @@ namespace ConsoleEngine
     {
         private Camera camera;
         private List<Shape> shapes = new List<Shape>();
-        private float rotateSpeed = 0.01f;
-        private float moveSpeed = 0.2f;
-
+        private float rotateSpeed = 0.04f;
+        private float moveSpeed = 0.05f;
+        private Vector3 origin = new Vector3(0f, 0f, 10f);
         public void Init()
         {
             SubscribeEvents();
+            shapes.Clear();
 
             // Create first shape (cube)
             Shape cube1 = new Shape();
-
             cube1.vertices = new Vector3[] {
                 new Vector3(-1, -1, -1), // 0
                 new Vector3(-1, -1, 1),  // 1
@@ -32,7 +32,6 @@ namespace ConsoleEngine
                 new Vector3(1, 1, 1),    // 6
                 new Vector3(1, 1, -1),   // 7
             };
-
             cube1.indices = new int[] {
                 // Front
                 0, 4, 7,
@@ -58,11 +57,10 @@ namespace ConsoleEngine
                 1, 2, 5,
                 5, 6, 2
             };
-
             cube1.colors = new ConsoleColor[]
             {
                 // Front
-                ConsoleColor.White,
+                ConsoleColor.Blue,
                 ConsoleColor.Blue,
 
                 // Bottom
@@ -85,26 +83,30 @@ namespace ConsoleEngine
                 ConsoleColor.Blue,
                 ConsoleColor.Blue
             };
+            cube1.Translate(origin);
+            //shapes.Add(cube1);
 
-            cube1.Translate(new Vector3(5, 0, 5));
-            shapes.Add(cube1);
-
-            Shape? shape = ObjImporter.Import("C:\\Users\\Actility\\Downloads\\cat.obj");
-            if (shape != null)
+            Shape? shape = ObjImporter.Import(Settings.objectPath);
+            if (shape == null)
             {
-                Shape actualShape = shape.Value;
-                actualShape.Translate(new Vector3(0, 0, 5));
-                actualShape.Scale(new Vector3(10, -10, 10), new Vector3(0,0,5));
-                shapes.Add(actualShape);
+                ConsoleDisplay2.Instance.DrawLine("Invalid model or model path.", ConsoleColor.Red, ConsoleColor.Black);
+                ConsoleDisplay2.Instance.DrawLine("(3D models should only contain triangles)", ConsoleColor.Red, ConsoleColor.Black);
+                return;
             }
 
-            //Shape cube2 = new Shape(cube1);
-            //cube2.Translate(new Vector3(5, 0, 5));
-            //shapes.Add(cube2);
+            Shape actualShape = shape.Value;
+            actualShape.Translate(origin);
+            //actualShape.Rotate(0, -60, 0, origin);
+            actualShape.Scale(new Vector3(2f, 2f, 2f), origin);
+            shapes.Add(actualShape);
 
-            //Shape cube3 = new Shape(cube1);
-            //cube3.Translate(new Vector3(-5, 0, 5));
-            //shapes.Add(cube3);
+            Shape clone1 = new Shape(actualShape);
+            clone1.Translate(new Vector3(-5, 0, 0));
+            shapes.Add(clone1);
+
+            Shape clone2 = new Shape(actualShape);
+            clone2.Translate(new Vector3(5, 0, 0));
+            shapes.Add(clone2);
 
             camera = new Camera();
         }
@@ -141,8 +143,9 @@ namespace ConsoleEngine
         public void Update()
         {
             float rotateSpeed = 1f * ((float) PerformanceInfo.Instance.DeltaTime);
-            shapes[0].Rotate(0, rotateSpeed, 0, new Vector3(5, 0, 5));
-            shapes[1].Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
+            if (shapes.Count == 0) return;
+            shapes[0].Rotate(0, rotateSpeed, 0, origin);
+            //shapes[1].Rotate(0, rotateSpeed, 0, new Vector3(5, 0, 5));
             //foreach (Shape shape in shapes)
             //{
             //    shape.Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
@@ -151,14 +154,14 @@ namespace ConsoleEngine
 
         public void Rotate(float x, float y, float z)
         {
-            camera.RotationY += y;
+            camera.Rotation.X += x;
+            camera.Rotation.Y += y;
+            camera.Rotation.Z += z;
         }
 
-        public void Move(float x, float y, float z)
+        public void Move(Vector3 distance)
         {
-            camera.Position.X += x;
-            camera.Position.Y += y;
-            camera.Position.Z += z;
+            camera.Move(distance);
         }
 
         public void HandleKeyPressed(KeyPressedEvent e)
@@ -166,11 +169,11 @@ namespace ConsoleEngine
             // Rotate
             if (e.key == ConsoleKey.UpArrow)
             {
-                Rotate(0, 0, 0);
+                Rotate(rotateSpeed, 0, 0);
             }
             else if (e.key == ConsoleKey.DownArrow)
             {
-                Rotate(0, 0, 0);
+                Rotate(-rotateSpeed, 0, 0);
             }
             else if (e.key == ConsoleKey.RightArrow)
             {
@@ -184,27 +187,27 @@ namespace ConsoleEngine
             // Move
             if (e.key == ConsoleKey.Z)
             {
-                Move(0, 0, moveSpeed);
+                camera.Move(new Vector3(0, 0, moveSpeed));
             }
             else if (e.key == ConsoleKey.Q)
             {
-                Move(-moveSpeed, 0, 0);
+                camera.Move(new Vector3(-moveSpeed, 0, 0));
             }
             else if (e.key == ConsoleKey.S)
             {
-                Move(0, 0, -moveSpeed);
+                camera.Move(new Vector3(0, 0, -moveSpeed));
             }
             else if (e.key == ConsoleKey.D)
             {
-                Move(moveSpeed, 0, 0);
+                camera.Move(new Vector3(moveSpeed, 0, 0));
             }
             else if (e.key == ConsoleKey.Spacebar)
             {
-                Move(0, moveSpeed, 0);
+                camera.Move(new Vector3(0, moveSpeed, 0));
             }
             else if (e.key == ConsoleKey.C)
             {
-                Move(0, -moveSpeed, 0);
+                camera.Move(new Vector3(0, -moveSpeed, 0));
             }
 
             // Pause

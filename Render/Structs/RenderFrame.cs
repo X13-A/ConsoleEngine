@@ -18,6 +18,7 @@ namespace ConsoleEngine.Render
             Width = width;
             Height = height;
             Display = new ConsolePixel[width, height];
+            Clear();
         }
 
         public RenderFrame(RenderFrame frame)
@@ -25,6 +26,7 @@ namespace ConsoleEngine.Render
             Width = frame.Width;
             Height = frame.Height;
             Display = new ConsolePixel[Width, Height];
+            Clear();
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -52,6 +54,7 @@ namespace ConsoleEngine.Render
 
         public ConsolePixel GetPixel(int x, int y)
         {
+            if (x >= Width || y >= Height) return null;
             return Display[x, y];
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ConsoleEngine.EventSystem;
+using ConsoleEngine.Menus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,14 @@ namespace ConsoleEngine
                 res.Add(item);
             }
             return res;
+        }
+
+        public static void ImportObject()
+        {
+            string? path = InputManager.Instance.OpenInputScreen("Please enter path to the new model:");
+            if (path == null) path = "";
+            Settings.objectPath = path;
+            MenuManager.Instance.RefreshNames();
         }
     }
 }

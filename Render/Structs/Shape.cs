@@ -12,6 +12,7 @@ namespace ConsoleEngine.Render
     {
         public Vector3[] vertices = { };
         public int[] indices = { };
+        public Vector3[] normals = { };
         public ConsoleColor[] colors = { };
         
         public Shape() {}
@@ -21,9 +22,11 @@ namespace ConsoleEngine.Render
             vertices = new Vector3[shape.vertices.Length];
             indices = new int[shape.indices.Length];
             colors = new ConsoleColor[shape.colors.Length];
+            normals = new Vector3[shape.indices.Length/3];
             shape.vertices.CopyTo(vertices, 0);
             shape.indices.CopyTo(indices, 0);
             shape.colors.CopyTo(colors, 0);
+            shape.normals.CopyTo(normals, 0);
         }
 
         public void Translate(Vector3 offset)
