@@ -15,6 +15,7 @@ namespace ConsoleEngine
         {
             if (instance != null) return;
             instance = this as T;
+            Init();
         }
 
         public Singleton(bool replace)
@@ -22,8 +23,13 @@ namespace ConsoleEngine
             if (replace || instance == null)
             {
                 instance = this as T;
-                return;
+                Init();
             }
         }
+
+        /// <summary>
+        /// Init is executed when the singleton is instanciated
+        /// </summary>
+        protected virtual void Init() {}
     }
 }

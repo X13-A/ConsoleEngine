@@ -24,7 +24,7 @@ namespace ConsoleEngine.Render
         private ulong frames;
         public double averageFPS;
 
-        public void Init()
+        protected override void Init()
         {
             time.Start();
             avgWatch.Start();

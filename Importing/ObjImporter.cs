@@ -1,13 +1,7 @@
 ﻿using ConsoleEngine.EventSystem;
 using ConsoleEngine.Render;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleEngine.Importing
 {

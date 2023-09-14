@@ -13,17 +13,15 @@ using ConsoleEngine.Importing;
 
 namespace ConsoleEngine
 {
-    public enum AppState { WaitingInput, Running }
     public class App : Singleton<App>
     {
         private bool done;
-        private AppState appState;
-        public AppState AppState => appState;
 
         public void Start()
         {
-            appState = AppState.Running;
             SetupSingletons();
+            MenuStorage.Populate();
+            EventManager.Instance.Raise(new OpenMenuEvent { menu = MenuStorage.Get(MenuID.MainMenu)});
             SubscribeEvents();
             StartLoop();
         }
@@ -32,8 +30,6 @@ namespace ConsoleEngine
         {
             EventManager.Instance.AddListener<ExitAppEvent>(Exit);
             EventManager.Instance.AddListener<StartGameEvent>(StartGame);
-            EventManager.Instance.AddListener<WaitForInputEvent>((WaitForInputEvent e) => { this.appState = AppState.WaitingInput; });
-            EventManager.Instance.AddListener<InputFinishedEvent>((InputFinishedEvent e) => { this.appState = AppState.Running; });
         }
 
         private void Exit(ExitAppEvent e)
@@ -44,12 +40,7 @@ namespace ConsoleEngine
         private void StartGame(StartGameEvent e)
         {
             EventManager.Instance.Raise(new CloseMenuEvent());
-
             new Scene3D();
-            Scene3D.Instance.Init();
-
-            //new Game();
-            //Game.Instance.Init();
         }
 
         private void StartLoop()
@@ -72,23 +63,16 @@ namespace ConsoleEngine
             new Renderer();
             new Utils();
             new PerformanceInfo();
-            PerformanceInfo.Instance.Init();
-            MenuManager.Instance.Init();
-            ConsoleDisplay.Instance.Init();
         }
 
         private void Update()
         {
-            if (appState == AppState.WaitingInput) return;
-
             InputManager.Instance.UpdateKeyStates();
             Scene3D.Instance?.Update();
         }
 
         private void Draw()
         {
-            if (appState == AppState.WaitingInput) return;
-
             if (MenuManager.Instance.ActiveMenu != null)
             {
                 MenuManager.Instance.ActiveMenu.Draw();

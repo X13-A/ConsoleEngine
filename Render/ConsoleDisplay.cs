@@ -9,12 +9,10 @@ namespace ConsoleEngine.Render
         private Vector2Int cursor = new Vector2Int(0, 0);
         public int consoleWidth = Console.WindowWidth;
         public int consoleHeight = Console.WindowHeight;
-        private int consoleBufferWidth = Console.BufferWidth;
-        private int consoleBufferHeight = Console.BufferHeight;
         private int lastResize = 0;
         private bool isCursorInFrame => cursor.X < frame.Width && cursor.Y < frame.Height;
 
-        public void Init()
+        protected override void Init()
         {
             Console.CursorVisible = false;
             frame = new RenderFrame(Console.WindowWidth, Console.WindowHeight);
@@ -151,10 +149,8 @@ namespace ConsoleEngine.Render
         {
             consoleWidth = Console.WindowWidth;
             consoleHeight = Console.WindowHeight;
-            consoleBufferWidth = Console.BufferWidth;
-            consoleBufferHeight = Console.BufferHeight;
 
-            if (consoleWidth != frame.Width && consoleHeight != frame.Height)
+            if (consoleWidth != frame.Width || consoleHeight != frame.Height)
             {
                 EventManager.Instance.Raise(new WindowResizeEvent { width = consoleWidth, height = consoleHeight });
             }

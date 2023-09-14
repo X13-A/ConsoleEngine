@@ -10,5 +10,6 @@ namespace ConsoleEngine
     {
         public static bool displayPerformanceInfo = false;
         public static string objectPath = "C:\\Users\\Alex\\Desktop\\Models\\Spring.obj";
+        public static string scenePath = "";
     }
 }

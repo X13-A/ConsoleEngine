@@ -52,14 +52,6 @@ namespace ConsoleEngine.EventSystem
     {
     }
 
-    public class WaitForInputEvent : Event
-    {
-    }
-
-    public class InputFinishedEvent : Event
-    {
-    }
-
     public class WindowResizeEvent : Event
     {
         public int width;

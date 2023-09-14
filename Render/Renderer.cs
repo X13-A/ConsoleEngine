@@ -26,7 +26,6 @@ namespace ConsoleEngine.Render
         { }
 
         /// <param name="intensity">Must range from 0 to 1</param>
-        /// <returns></returns>
         public char SymbolFromIntensity(float intensity)
         {
             int index = (int) Math.Round(intensity * symbols.Length);
@@ -107,7 +106,7 @@ namespace ConsoleEngine.Render
                 );
                 triangle.SetNormal();
                 // TODO: Fix backface culling
-                //if (!camera.IsVisible(triangle)) continue;
+                if (!camera.IsVisible(triangle)) continue;
 
                 Triangle2D? projectedTriangle = ProjectTriangle(triangle, camera);
                 if (projectedTriangle == null) continue;

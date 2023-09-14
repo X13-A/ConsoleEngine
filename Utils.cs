@@ -1,10 +1,5 @@
 ﻿using ConsoleEngine.EventSystem;
-using ConsoleEngine.Menus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ConsoleEngine
 {
@@ -12,9 +7,14 @@ namespace ConsoleEngine
     {
         private Random rand = new Random();
 
-        public float RandomFloat(float min, float max)
+        public static float? RandomFloat(float min, float max)
         {
-            return min + (float)rand.NextDouble() * (max - min);
+            if (Instance == null)
+            {
+                EventManager.Instance.Raise(new ErrorEvent { message = "Error: You must instanciate the class Utils before using this method." });
+                return null;
+            }
+            return min + (float) Instance.rand.NextDouble() * (max - min);
         }
 
         public static List<T> CloneList<T>(List<T> list)
@@ -27,12 +27,16 @@ namespace ConsoleEngine
             return res;
         }
 
-        public static void ImportObject()
+        public static void OpenFile(string path)
         {
-            string? path = InputManager.Instance.OpenInputScreen("Please enter path to the new model:");
-            if (path == null) path = "";
-            Settings.objectPath = path;
-            MenuManager.Instance.RefreshNames();
+            var process = new Process();
+            process.StartInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = true,
+                FileName = path
+            };
+            process.Start();
+            process.WaitForExit();
         }
     }
 }

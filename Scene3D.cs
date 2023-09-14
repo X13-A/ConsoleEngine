@@ -14,7 +14,8 @@ namespace ConsoleEngine
         private float rotateSpeed = 0.04f;
         private float moveSpeed = 0.05f;
         private Vector3 origin = new Vector3(0f, 0f, 10f);
-        public void Init()
+
+        protected override void Init()
         {
             SubscribeEvents();
             shapes.Clear();
@@ -120,7 +121,7 @@ namespace ConsoleEngine
 
         private void Pause(PauseGameEvent e)
         {
-            EventManager.Instance.Raise(new OpenMenuEvent { menu = MenuManager.Instance.PauseMenu });
+            EventManager.Instance.Raise(new OpenMenuEvent { menu = MenuStorage.Get(MenuID.MainMenu)});
         }
 
         private void Resume(ResumeGameEvent e)
