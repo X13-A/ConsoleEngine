@@ -49,7 +49,7 @@ namespace ConsoleEngine.Menus
 
         public override void Draw()
         {
-            ConsoleDisplay2.Instance.DrawLine(name, color, backgroundColor);
+            ConsoleDisplay.Instance.DrawLine(name, color, backgroundColor);
 
             int i = 0;
             foreach (MenuItem item in Items)

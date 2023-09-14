@@ -38,7 +38,7 @@ namespace ConsoleEngine
             string? res = Console.ReadLine();
             EventManager.Instance.Raise(new InputFinishedEvent());
             Console.Clear();
-            ConsoleDisplay2.Instance.Clear();
+            ConsoleDisplay.Instance.Clear();
             return res;
         }
     }

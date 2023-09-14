@@ -48,9 +48,9 @@ namespace ConsoleEngine.Render
             List<TrianglePixelData> pixels = new List<TrianglePixelData>();
 
             BoundingBox2D bb = BoundingBox2D.FromTriangle2D(triangle);
-            for (int x = (int) MathF.Max(bb.minX, 0); x < (int) MathF.Min(bb.maxX, ConsoleDisplay2.Instance.consoleWidth); x++)
+            for (int x = (int) MathF.Max(bb.minX, 0); x < (int) MathF.Min(bb.maxX, ConsoleDisplay.Instance.consoleWidth); x++)
             {
-                for (int y = (int)MathF.Max(bb.minY, 0); y < (int)MathF.Min(bb.maxY, ConsoleDisplay2.Instance.consoleHeight); y++)
+                for (int y = (int)MathF.Max(bb.minY, 0); y < (int)MathF.Min(bb.maxY, ConsoleDisplay.Instance.consoleHeight); y++)
                 {
                     Vector3 barycentricWeights;
                     if (triangle.ContainsPoint(new Vector2(x, y), out barycentricWeights))
@@ -139,7 +139,7 @@ namespace ConsoleEngine.Render
 
         public void Draw()
         {
-            ConsoleDisplay2.Instance.DrawFrame(frame);
+            ConsoleDisplay.Instance.DrawFrame(frame);
             frame.Resize(Console.WindowWidth, Console.WindowHeight);
             frame.Clear();
         }

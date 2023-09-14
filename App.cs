@@ -68,13 +68,13 @@ namespace ConsoleEngine
             new EventManager();
             new InputManager();
             new MenuManager();
-            new ConsoleDisplay2();
+            new ConsoleDisplay();
             new Renderer();
             new Utils();
             new PerformanceInfo();
             PerformanceInfo.Instance.Init();
             MenuManager.Instance.Init();
-            ConsoleDisplay2.Instance.Init();
+            ConsoleDisplay.Instance.Init();
         }
 
         private void Update()
@@ -99,7 +99,7 @@ namespace ConsoleEngine
             }
             Console.Title = $"{PerformanceInfo.Instance.averageFPS} FPS";
 
-            ConsoleDisplay2.Instance.Refresh_GreyScale();
+            ConsoleDisplay.Instance.Refresh_GreyScale();
         }
     }
 }

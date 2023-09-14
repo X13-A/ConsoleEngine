@@ -49,11 +49,11 @@ namespace ConsoleEngine.Menus
         {
             if (highlighted)
             {
-                ConsoleDisplay2.Instance.DrawLine($"-> {name}", highlightColor, highlightBackgroundColor);
+                ConsoleDisplay.Instance.DrawLine($"-> {name}", highlightColor, highlightBackgroundColor);
             }
             else
             {
-                ConsoleDisplay2.Instance.DrawLine($"   {name}", color, backgroundColor);
+                ConsoleDisplay.Instance.DrawLine($"   {name}", color, backgroundColor);
             }
         }
     }

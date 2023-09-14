@@ -89,8 +89,8 @@ namespace ConsoleEngine
             Shape? shape = ObjImporter.Import(Settings.objectPath);
             if (shape == null)
             {
-                ConsoleDisplay2.Instance.DrawLine("Invalid model or model path.", ConsoleColor.Red, ConsoleColor.Black);
-                ConsoleDisplay2.Instance.DrawLine("(3D models should only contain triangles)", ConsoleColor.Red, ConsoleColor.Black);
+                ConsoleDisplay.Instance.DrawLine("Invalid model or model path.", ConsoleColor.Red, ConsoleColor.Black);
+                ConsoleDisplay.Instance.DrawLine("(3D models should only contain triangles)", ConsoleColor.Red, ConsoleColor.Black);
                 return;
             }
 
@@ -131,7 +131,7 @@ namespace ConsoleEngine
         public void Draw()
         {
             if (camera == null) return;
-            ConsoleDisplay2.Instance.DrawLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
+            ConsoleDisplay.Instance.DrawLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
 
             foreach (Shape shape in shapes)
             {

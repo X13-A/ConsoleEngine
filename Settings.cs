@@ -9,6 +9,6 @@ namespace ConsoleEngine
     public static class Settings
     {
         public static bool displayPerformanceInfo = false;
-        public static string objectPath = "C:\\Users\\Alex\\Desktop\\Spring.obj";
+        public static string objectPath = "C:\\Users\\Alex\\Desktop\\Models\\Spring.obj";
     }
 }
