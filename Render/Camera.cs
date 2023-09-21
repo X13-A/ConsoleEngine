@@ -53,7 +53,8 @@ namespace ConsoleEngine.Render
             {
                 triangle.SetNormal();
             }
-            Vector3 viewVector = Vector3.Normalize(Position - triangle.a);
+            Vector3 centroid = (triangle.a + triangle.b + triangle.c) / 3;
+            Vector3 viewVector = Vector3.Normalize(Position - centroid);
             return Vector3.Dot(triangle.normal.Value, viewVector) >= 0;
         }
 
@@ -66,9 +67,7 @@ namespace ConsoleEngine.Render
         {
             Vector3 forward = new Vector3(MathF.Sin(Rotation.Y), 0, MathF.Cos(Rotation.Y));
             Vector3 right = Vector3.Normalize(Vector3.Cross(forward, new Vector3(0, 1, 0)));
-            Vector3 up = Vector3.Normalize(Vector3.Cross(right, forward));
 
-            // Update position
             Position += forward * distance.Z;
             Position += -right * distance.X;
             Position.Y += distance.Y;

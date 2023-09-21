@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Diagnostics;
-using ConsoleEngine.EventSystem;
+﻿using ConsoleEngine.EventSystem;
 using ConsoleEngine.Menus;
 using ConsoleEngine.Render;
-using ConsoleEngine.Importing;
 
 namespace ConsoleEngine
 {
@@ -29,7 +20,7 @@ namespace ConsoleEngine
         private void SubscribeEvents()
         {
             EventManager.Instance.AddListener<ExitAppEvent>(Exit);
-            EventManager.Instance.AddListener<StartGameEvent>(StartGame);
+            EventManager.Instance.AddListener<StartRendererEvent>(StartRenderer);
         }
 
         private void Exit(ExitAppEvent e)
@@ -37,10 +28,17 @@ namespace ConsoleEngine
             done = true;
         }
 
-        private void StartGame(StartGameEvent e)
+        private void StartRenderer(StartRendererEvent e)
         {
+            if (Scene.Instance != null)
+            {
+                Scene.Instance.Reset();
+            }
+            else
+            {
+                new Scene();
+            }
             EventManager.Instance.Raise(new CloseMenuEvent());
-            new Scene3D();
         }
 
         private void StartLoop()
@@ -68,7 +66,7 @@ namespace ConsoleEngine
         private void Update()
         {
             InputManager.Instance.UpdateKeyStates();
-            Scene3D.Instance?.Update();
+            Scene.Instance?.Update();
         }
 
         private void Draw()
@@ -79,10 +77,9 @@ namespace ConsoleEngine
             }
             else
             {
-                Scene3D.Instance?.Draw();
+                Scene.Instance?.Draw();
             }
-            Console.Title = $"{PerformanceInfo.Instance.averageFPS} FPS";
-
+            Console.Title = $"{PerformanceInfo.Instance.averageFPS} FPS ({ConsoleDisplay.Instance.consoleWidth}x{ConsoleDisplay.Instance.consoleHeight})";
             ConsoleDisplay.Instance.Refresh_GreyScale();
         }
     }

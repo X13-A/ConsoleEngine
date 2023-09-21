@@ -10,6 +10,6 @@ namespace ConsoleEngine
     {
         public static bool displayPerformanceInfo = false;
         public static string objectPath = "C:\\Users\\Alex\\Desktop\\Models\\Spring.obj";
-        public static string scenePath = "";
+        public static string scenePath = "C:\\Users\\Alex\\Desktop\\Scene.txt";
     }
 }

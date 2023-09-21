@@ -7,22 +7,17 @@ using System.Numerics;
 
 namespace ConsoleEngine
 {
-    public class Scene3D : Singleton<Scene3D>
+    public class Scene : Singleton<Scene>
     {
         private Camera camera;
         private List<Shape> shapes = new List<Shape>();
-        private float rotateSpeed = 0.04f;
+        private float rotateSpeed = 0.02f;
         private float moveSpeed = 0.05f;
-        private Vector3 origin = new Vector3(0f, 0f, 10f);
 
-        protected override void Init()
+        public Shape CreateCube()
         {
-            SubscribeEvents();
-            shapes.Clear();
-
-            // Create first shape (cube)
-            Shape cube1 = new Shape();
-            cube1.vertices = new Vector3[] {
+            Shape cube = new Shape();
+            cube.vertices = new Vector3[] {
                 new Vector3(-1, -1, -1), // 0
                 new Vector3(-1, -1, 1),  // 1
                 new Vector3(1, -1, 1),   // 2
@@ -33,7 +28,7 @@ namespace ConsoleEngine
                 new Vector3(1, 1, 1),    // 6
                 new Vector3(1, 1, -1),   // 7
             };
-            cube1.indices = new int[] {
+            cube.indices = new int[] {
                 // Front
                 0, 4, 7,
                 7, 3, 0,
@@ -58,58 +53,64 @@ namespace ConsoleEngine
                 1, 2, 5,
                 5, 6, 2
             };
-            cube1.colors = new ConsoleColor[]
+            return cube;
+        }
+
+        protected override void Init()
+        {
+            shapes.Clear();
+            SubscribeEvents();
+            LoadScene();
+            camera = new Camera();
+            camera.Position = new Vector3(0, 6, 3.5f);
+            camera.Rotation = new Vector3(-0.8f, 0, 0);
+        }
+
+        public void Reset()
+        {
+            shapes.Clear();
+            LoadScene();
+            camera = new Camera();
+            camera.Position = new Vector3(0, 6, 3.5f);
+            camera.Rotation = new Vector3(-0.8f, 0, 0);
+        }
+
+        public void LoadScene()
+        {
+            if (!File.Exists(Settings.scenePath))
             {
-                // Front
-                ConsoleColor.Blue,
-                ConsoleColor.Blue,
-
-                // Bottom
-                ConsoleColor.Yellow,
-                ConsoleColor.Yellow,
-
-                // Right
-                ConsoleColor.Red,
-                ConsoleColor.Red,
-
-                // Left
-                ConsoleColor.Green,
-                ConsoleColor.Green,
-
-                // Top
-                ConsoleColor.Yellow,
-                ConsoleColor.Yellow,
-
-                // Back
-                ConsoleColor.Blue,
-                ConsoleColor.Blue
-            };
-            cube1.Translate(origin);
-            //shapes.Add(cube1);
-
-            Shape? shape = ObjImporter.Import(Settings.objectPath);
-            if (shape == null)
-            {
-                ConsoleDisplay.Instance.DrawLine("Invalid model or model path.", ConsoleColor.Red, ConsoleColor.Black);
-                ConsoleDisplay.Instance.DrawLine("(3D models should only contain triangles)", ConsoleColor.Red, ConsoleColor.Black);
+                EventManager.Instance.Raise(new ImportErrorEvent { message = $"File {Settings.scenePath} not found."});
                 return;
             }
 
-            Shape actualShape = shape.Value;
-            actualShape.Translate(origin);
-            //actualShape.Rotate(0, -60, 0, origin);
-            actualShape.Scale(new Vector3(2f, 2f, 2f), origin);
-            shapes.Add(actualShape);
+            Shape? shape = null;
+            Shape currentShape = new Shape(); 
+            foreach (var line in File.ReadLines(Settings.scenePath))
+            {
+                var parts = line.Replace("\"", "").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            Shape clone1 = new Shape(actualShape);
-            clone1.Translate(new Vector3(-5, 0, 0));
-            shapes.Add(clone1);
+                if (parts.Length == 0) continue;
 
-            Shape clone2 = new Shape(actualShape);
-            clone2.Translate(new Vector3(5, 0, 0));
-            shapes.Add(clone2);
+                if (parts[0].ToLower() == "obj" && parts.Length >= 2)
+                {
+                    string objPath = parts[1];
 
-            camera = new Camera();
+                    shape = ObjImporter.Import(objPath);
+                    if (shape.HasValue)
+                    {
+                        currentShape = shape.Value;
+                        shapes.Add(currentShape);
+                    }
+                }
+                else if (parts[0].ToLower() == "pos" && shape.HasValue && parts.Length >= 4)
+                {
+                    float x = float.Parse(parts[1]);
+                    float y = float.Parse(parts[2]);
+                    float z = float.Parse(parts[3]);
+                    currentShape.Translate(new Vector3(x, y, z));
+                    currentShape.origin = new Vector3(x, y, z);
+                }
+            }
         }
 
         public void SubscribeEvents()
@@ -121,7 +122,7 @@ namespace ConsoleEngine
 
         private void Pause(PauseGameEvent e)
         {
-            EventManager.Instance.Raise(new OpenMenuEvent { menu = MenuStorage.Get(MenuID.MainMenu)});
+            EventManager.Instance.Raise(new OpenMenuEvent { menu = MenuStorage.Get(MenuID.PauseMenu)});
         }
 
         private void Resume(ResumeGameEvent e)
@@ -132,7 +133,6 @@ namespace ConsoleEngine
         public void Draw()
         {
             if (camera == null) return;
-            ConsoleDisplay.Instance.DrawLine(camera.ToString(), ConsoleColor.White, ConsoleColor.DarkCyan);
 
             foreach (Shape shape in shapes)
             {
@@ -143,14 +143,11 @@ namespace ConsoleEngine
 
         public void Update()
         {
-            float rotateSpeed = 1f * ((float) PerformanceInfo.Instance.DeltaTime);
-            if (shapes.Count == 0) return;
-            shapes[0].Rotate(0, rotateSpeed, 0, origin);
-            //shapes[1].Rotate(0, rotateSpeed, 0, new Vector3(5, 0, 5));
-            //foreach (Shape shape in shapes)
-            //{
-            //    shape.Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 5));
-            //}
+            float rotateSpeed = 0.25f * ((float) PerformanceInfo.Instance.DeltaTime);
+            foreach (Shape shape in shapes)
+            {
+                shape.Rotate(0, rotateSpeed, 0, shape.origin);
+            }
         }
 
         public void Rotate(float x, float y, float z)

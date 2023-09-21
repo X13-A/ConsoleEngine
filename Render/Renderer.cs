@@ -21,9 +21,12 @@ namespace ConsoleEngine.Render
             frame.Resize(Console.WindowWidth, Console.WindowHeight);
             frame.Clear();
         }
-
         public Renderer() : this(Console.WindowWidth, Console.WindowHeight)
         { }
+        protected override void Init()
+        {
+            EventManager.Instance.AddListener<WindowResizeEvent>(Resize);
+        }
 
         /// <param name="intensity">Must range from 0 to 1</param>
         public char SymbolFromIntensity(float intensity)
@@ -104,9 +107,10 @@ namespace ConsoleEngine.Render
                     shape.vertices[shape.indices[i * 3 + 1]],
                     shape.vertices[shape.indices[i * 3 + 2]]
                 );
-                triangle.SetNormal();
+
+                triangle.normal = shape.normals[i];
                 // TODO: Fix backface culling
-                if (!camera.IsVisible(triangle)) continue;
+                //if (!camera.IsVisible(triangle)) continue;
 
                 Triangle2D? projectedTriangle = ProjectTriangle(triangle, camera);
                 if (projectedTriangle == null) continue;
@@ -119,27 +123,22 @@ namespace ConsoleEngine.Render
                     float depth = pixels[j].barycentricWeight.X * triangle.a.Z + pixels[j].barycentricWeight.Y * triangle.b.Z + pixels[j].barycentricWeight.Z * triangle.c.Z;
                     if (depth < frame.GetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y).depth)
                     {
-                        ConsoleColor color = (shape.colors.Length > i ? shape.colors[i] : ConsoleColor.Gray);
                         float intensityX = (1 + MathF.Sin(triangle.normal.Value.X)) / 2;
-                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(color, ConsoleColor.Black, SymbolFromIntensity(intensityX), depth));
+                        frame.SetPixel(pixels[j].coordinates.X, pixels[j].coordinates.Y, new ConsolePixel(ConsoleColor.White, ConsoleColor.Black, SymbolFromIntensity(intensityX), depth));
                     }
                 }
             }
         }
 
-        public Vector2 Project(Vector3 point3D)
+        private void Resize(WindowResizeEvent e)
         {
-            float scale = 10 / point3D.Z;
-            float x = point3D.X * scale + frame.Width / 2;
-            float y = -point3D.Y * scale + frame.Height / 2;
-
-            return new Vector2(x, y);
+            frame.Resize(e.width, e.height);
+            frame.Clear();
         }
 
         public void Draw()
         {
             ConsoleDisplay.Instance.DrawFrame(frame);
-            frame.Resize(Console.WindowWidth, Console.WindowHeight);
             frame.Clear();
         }
     }

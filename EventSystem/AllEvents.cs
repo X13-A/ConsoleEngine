@@ -27,7 +27,7 @@ namespace ConsoleEngine.EventSystem
     {
     }
 
-    public class StartGameEvent : Event
+    public class StartRendererEvent : Event
     {
     }
 
@@ -58,3 +58,11 @@ namespace ConsoleEngine.EventSystem
         public int height;
     }
 }
+
+
+
+
+
+
+
+      

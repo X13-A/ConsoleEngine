@@ -11,21 +11,19 @@ namespace ConsoleEngine.Render
     public struct Shape
     {
         public Vector3[] vertices = { };
-        public int[] indices = { };
         public Vector3[] normals = { };
-        public ConsoleColor[] colors = { };
-        
+        public int[] indices = { };
+        public Vector3 origin = Vector3.Zero;
+
         public Shape() {}
 
         public Shape(Shape shape)
         {
             vertices = new Vector3[shape.vertices.Length];
             indices = new int[shape.indices.Length];
-            colors = new ConsoleColor[shape.colors.Length];
             normals = new Vector3[shape.indices.Length/3];
             shape.vertices.CopyTo(vertices, 0);
             shape.indices.CopyTo(indices, 0);
-            shape.colors.CopyTo(colors, 0);
             shape.normals.CopyTo(normals, 0);
         }
 
@@ -76,6 +74,5 @@ namespace ConsoleEngine.Render
 
             Translate(scaleOrigin);
         }
-
     }
 }
