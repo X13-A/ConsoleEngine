@@ -1,5 +1,5 @@
 # ConsoleEngine
-3D Renderer running inside .NET console 
+3D Renderer running inside the windows console.
 
 ### How to use
 - In the "bin\Release\net6.0", execute ConsoleEngine.exe.
