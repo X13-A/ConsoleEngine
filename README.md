@@ -12,5 +12,8 @@
     ```
     obj "Rafale.obj"
     pos 0 0 10
+    obj "Spring.obj"
+    pos 5 0 10
     ```
   - Note that .obj files must only contain triangles, you can use blender to triangulate your meshes.
+  - As of now, only the first object will rotate around the (0,0,10) coordinates.
