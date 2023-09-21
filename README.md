@@ -9,6 +9,8 @@
   - To add objects, you can use the "obj" keyword followed by the path to it (it can be absolute or relative).
   - After that, you can set it's position using "pos" keyword followed by 3 numeric values.
   - Each instruction must be in one line. Here is an example of a valid scene:
+    ```
     obj "Rafale.obj"
     pos 0 0 10
+    ```
   - Note that .obj files must only contain triangles, you can use blender to triangulate your meshes.
