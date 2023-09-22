@@ -144,10 +144,8 @@ namespace ConsoleEngine
         public void Update()
         {
             float rotateSpeed = 0.25f * ((float) PerformanceInfo.Instance.DeltaTime);
-            foreach (Shape shape in shapes)
-            {
-                shape.Rotate(0, rotateSpeed, 0, shape.origin);
-            }
+            if (shapes.Count == 0) return;
+            shapes[0].Rotate(0, rotateSpeed, 0, new Vector3(0, 0, 10));
         }
 
         public void Rotate(float x, float y, float z)

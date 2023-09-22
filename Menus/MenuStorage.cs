@@ -36,7 +36,7 @@ namespace ConsoleEngine.Menus
             exitButton.color = ConsoleColor.White;
             exitButton.highlightColor = ConsoleColor.Red;
             menus[MenuID.MainMenu].AddItem(new ConsoleMenuItem("Start renderer", () => EventManager.Instance.Raise(new StartRendererEvent())));
-            menus[MenuID.MainMenu].AddItem(new ConsoleMenuItem($"Edit scene", () => { Utils.OpenFile(Settings.scenePath); }));
+            menus[MenuID.MainMenu].AddItem(new ConsoleMenuItem($"Edit scene", () => { Utils.OpenFile(Settings.scenePath, true); }));
             menus[MenuID.MainMenu].AddItem(exitButton);
 
             // Pause menu

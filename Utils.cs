@@ -27,8 +27,13 @@ namespace ConsoleEngine
             return res;
         }
 
-        public static void OpenFile(string path)
+        public static void OpenFile(string path, bool create = false)
         {
+            if (create && !File.Exists(path))
+            {
+                using (File.Create(path)) { }
+            }
+
             var process = new Process();
             process.StartInfo = new ProcessStartInfo()
             {
