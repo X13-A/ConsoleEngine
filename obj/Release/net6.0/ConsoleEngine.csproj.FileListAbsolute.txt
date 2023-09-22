@@ -1,0 +1,15 @@
+C:\Git Projects\ConsoleEngine\bin\Release\net6.0\ConsoleEngine.exe
+C:\Git Projects\ConsoleEngine\bin\Release\net6.0\ConsoleEngine.deps.json
+C:\Git Projects\ConsoleEngine\bin\Release\net6.0\ConsoleEngine.runtimeconfig.json
+C:\Git Projects\ConsoleEngine\bin\Release\net6.0\ConsoleEngine.dll
+C:\Git Projects\ConsoleEngine\bin\Release\net6.0\ConsoleEngine.pdb
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.csproj.ResolveComReference.cache
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.GeneratedMSBuildEditorConfig.editorconfig
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.AssemblyInfoInputs.cache
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.AssemblyInfo.cs
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.csproj.CoreCompileInputs.cache
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.dll
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\refint\ConsoleEngine.dll
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.pdb
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ConsoleEngine.genruntimeconfig.cache
+C:\Git Projects\ConsoleEngine\obj\Release\net6.0\ref\ConsoleEngine.dll

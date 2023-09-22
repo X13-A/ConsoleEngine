@@ -1,0 +1,2 @@
+obj "Rafale.obj"
+pos 0 0 10
