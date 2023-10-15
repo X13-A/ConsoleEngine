@@ -202,7 +202,8 @@ namespace ConsoleEngine.Render
             CheckResize();
             cursor.X = 0; cursor.Y = 0;
             Console.SetCursorPosition(0, 0);
-
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
             for (int y = 0; y < frame.Height; y++)
             {
                 string line = "";
