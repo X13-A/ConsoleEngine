@@ -1,5 +1,7 @@
 # ConsoleEngine
 3D Renderer running inside the windows console.
+More details here:
+https://www.notion.so/alexfoulon/Console-Engine-447dd53f8f0f42059319ac9a5c8d2b4f
 
 ### How to use
 - In the "bin\Release\net6.0", execute ConsoleEngine.exe.
